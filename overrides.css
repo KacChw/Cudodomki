@@ -1,0 +1,51 @@
+/* Local logo and images copied from the Cudodomki source site. */
+.brand-logo img { width: auto; height: 58px; opacity: .92; }
+.hero { background: #173c34; }
+.hero-slides, .hero-slide { position: absolute; inset: 0; }
+.hero-slides { z-index: 0; }
+.hero-slide { opacity: 0; background-position: center; background-size: cover; background-repeat: no-repeat; transition: opacity 1.5s ease-in-out; }
+.hero-slide.active { opacity: 1; }
+.hero-slide:nth-child(1) { background-image: url('assets/images/hero-woszczele.jpg'); }
+.hero-slide:nth-child(2) { background-image: url('assets/images/hero-mrozy.jpg'); }
+.hero-slide:nth-child(3) { background-image: url('assets/images/woszczele-cover.jpg'); }
+.hero-overlay { z-index: 1; }
+.hero-content, .hero-note { z-index: 2; }
+.cabin-woszczele { background-image: url('assets/images/woszczele-cover.jpg'); }
+.cabin-mrozy { background-image: url('assets/images/hero-mrozy.jpg'); }
+.cabin-loft { background-image: url('assets/images/cudodomki-og.jpg'); }
+@media (max-width: 800px) { .brand-logo img { height: 46px; } }
+
+.gallery-full { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 50px; }
+.gallery-thumb { height: 180px; border: 0; padding: 0; background: #173c34; overflow: hidden; cursor: zoom-in; }
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease, opacity .35s ease; }
+.gallery-thumb:hover img { transform: scale(1.06); opacity: .82; }
+.lightbox { border: 0; padding: 0; max-width: min(94vw, 1200px); background: transparent; overflow: visible; }
+.lightbox::backdrop { background: rgba(7, 23, 19, .88); }
+.lightbox img { display: block; max-width: 94vw; max-height: 88vh; }
+.lightbox button { position: absolute; border: 0; color: white; background: rgba(0,0,0,.55); font: 28px/1 var(--sans); width: 46px; height: 46px; cursor: pointer; }
+.lightbox-close { top: -56px; right: 0; }
+.lightbox-prev { top: calc(50% - 23px); left: 14px; }
+.lightbox-next { top: calc(50% - 23px); right: 14px; }
+.availability { display: grid; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 11%; padding-top: 110px; padding-bottom: 110px; }
+.availability-copy h2 { font-size: 50px; margin-bottom: 22px; }
+.availability-copy > p:not(.eyebrow) { max-width: 360px; font-size: 15px; }
+.availability-legend { display: flex; gap: 22px; margin-top: 26px; font-size: 13px; }
+.availability-legend span { display: flex; align-items: center; gap: 8px; }
+.availability-legend i { display: inline-block; width: 12px; height: 12px; }
+.availability-legend .free { border: 1px solid #bbc7bc; }
+.availability-legend .booked { background: var(--clay); }
+.calendar-card { padding: 34px; background: #fffdf8; border: 1px solid #dcd8cd; box-shadow: 0 18px 40px rgba(23,60,52,.08); }
+.calendar-controls { display: flex; justify-content: space-between; gap: 18px; align-items: center; margin-bottom: 30px; }
+.calendar-controls select { color: var(--forest); border: 0; border-bottom: 1px solid #c8c9bd; background: transparent; padding: 9px 24px 9px 0; font: 600 14px var(--sans); }
+.calendar-nav { width: 36px; height: 36px; border: 1px solid #c8c9bd; background: none; color: var(--forest); cursor: pointer; font-size: 19px; }
+.calendar-card h3 { margin: 0 0 22px; text-transform: capitalize; color: var(--forest); font: 500 27px var(--serif); }
+.calendar-weekdays, .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+.calendar-weekdays { padding-bottom: 12px; border-bottom: 1px solid #d8d9cf; color: #718078; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.calendar-days { margin-top: 8px; gap: 4px; }
+.calendar-day { display: grid; place-items: center; height: 42px; font-size: 13px; }
+.calendar-day.booked { color: white; background: var(--clay); }
+.calendar-day.free { border: 1px solid transparent; }
+.calendar-day.free:hover { border-color: var(--pine); }
+.calendar-note { margin: 22px 0 0; color: #68786f; font-size: 12px; }
+.contact-map iframe { width: 100%; height: 100%; min-height: 610px; border: 0; display: block; }
+@media (max-width: 800px) { .gallery-full { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 28px; } .gallery-thumb { height: 155px; } .availability { grid-template-columns: 1fr; gap: 36px; padding-top: 76px; padding-bottom: 76px; } .availability-copy h2 { font-size: 42px; } .calendar-card { padding: 22px; } .contact-map iframe { min-height: 330px; } }
