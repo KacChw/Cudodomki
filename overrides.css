@@ -1,5 +1,5 @@
 /* Local logo and images copied from the Cudodomki source site. */
-.brand-logo img { width: auto; height: 140px; opacity: .95; margin-top: 15px; }
+.brand-logo img { width: auto; height: 140px; opacity: .95; margin-top: 60px; }
 .hero { background: #173c34; }
 .hero-slides, .hero-slide { position: absolute; inset: 0; }
 .hero-slides { z-index: 0; }
@@ -28,6 +28,20 @@
 .lightbox-close { top: -56px; right: 0; }
 .lightbox-prev { top: calc(50% - 23px); left: 14px; }
 .lightbox-next { top: calc(50% - 23px); right: 14px; }
+
+.map-btn {
+  background: transparent;
+  color: var(--forest);
+  border: 1px solid var(--forest);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-btn.active, .map-btn:hover {
+  background: var(--forest);
+  color: white;
+}
+
 
 .availability { display: grid; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 11%; padding-top: 110px; padding-bottom: 110px; }
 .availability-copy h2 { font-size: 50px; margin-bottom: 22px; }

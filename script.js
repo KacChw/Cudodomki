@@ -139,3 +139,29 @@ if (calendarTitle && calendarDays && calendarSelect) {
   calendarSelect.addEventListener('change', renderCalendar);
   renderCalendar();
 }
+
+// --- DYNAMICZNA MAPA GOOGLE DLA DOMKÓW ---
+const mapButtons = document.querySelectorAll('.map-btn');
+const mapFrame = document.querySelector('#contact-map-frame');
+const mapExternalLink = document.querySelector('#map-link-external');
+
+if (mapButtons.length > 0 && mapFrame) {
+  mapButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      // Usunięcie klasy active ze wszystkich przycisków i dodanie do klikniętego
+      mapButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const lat = btn.dataset.lat;
+      const lng = btn.dataset.lng;
+
+      // Zmiana adresu ramki iframe mapy Google
+      mapFrame.src = `https://www.google.com/maps?q=${lat},${lng}&z=13&output=embed`;
+      
+      // Aktualizacja linku zewnętrznego "Otwórz trasę"
+      if (mapExternalLink) {
+        mapExternalLink.href = `https://maps.google.com/?q=${lat},${lng}`;
+      }
+    });
+  });
+}
