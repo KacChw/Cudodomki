@@ -13,6 +13,33 @@ if (toggle && nav) {
   }));
 }
 
+// --- OBSŁUGA SEKCJI SZCZEGÓŁÓW DOMKÓW ---
+const cabinTabBtns = document.querySelectorAll('.cabin-tab-btn');
+const cabinDetailPanels = document.querySelectorAll('.cabin-detail-panel');
+const btnPoznajList = document.querySelectorAll('.btn-poznaj');
+
+const activateCabinTab = (cabinKey) => {
+  cabinTabBtns.forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.target === cabinKey);
+  });
+  cabinDetailPanels.forEach((panel) => {
+    panel.classList.toggle('active', panel.id === `detail-${cabinKey}`);
+  });
+};
+
+cabinTabBtns.forEach((btn) => {
+  btn.addEventListener('click', () => {
+    activateCabinTab(btn.dataset.target);
+  });
+});
+
+btnPoznajList.forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    const cabinKey = btn.dataset.cabin;
+    activateCabinTab(cabinKey);
+  });
+});
+
 const galleryPhotos = [
   // Woszczele
   { src: 'assets/gallery/foto-01.jpg', category: 'woszczele' },
