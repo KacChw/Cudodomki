@@ -99,6 +99,15 @@
   object-fit: cover;
   border-radius: 6px;
 }
+/* kolor linków*/
+.activity-list a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.activity-list a:hover {
+    text-decoration: underline;
+}
 
 @media (max-width: 800px) {
   .cabin-tabs-nav { flex-direction: column; gap: 8px; }
