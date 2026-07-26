@@ -18,23 +18,28 @@ const cabinTabBtns = document.querySelectorAll('.cabin-tab-btn');
 const cabinDetailPanels = document.querySelectorAll('.cabin-detail-panel');
 const btnPoznajList = document.querySelectorAll('.btn-poznaj');
 
+// Funkcja aktywująca konkretny domek
 const activateCabinTab = (cabinKey) => {
+  // Przełączanie aktywnego przycisku nad kartą
   cabinTabBtns.forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.target === cabinKey);
   });
+  // Przełączanie widocznego panelu z opisem
   cabinDetailPanels.forEach((panel) => {
     panel.classList.toggle('active', panel.id === `detail-${cabinKey}`);
   });
 };
 
+// Kliknięcie bezpośrednio w zakłady nad kartami (Cudodomek Woszczele / SPA Mrozy / SPA Loft)
 cabinTabBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
     activateCabinTab(btn.dataset.target);
   });
 });
 
+// Kliknięcie w przyciski "Poznaj →" w kartach powyżej
 btnPoznajList.forEach((btn) => {
-  btn.addEventListener('click', (e) => {
+  btn.addEventListener('click', () => {
     const cabinKey = btn.dataset.cabin;
     activateCabinTab(cabinKey);
   });
