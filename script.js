@@ -197,3 +197,20 @@ if (mapButtons.length > 0 && mapFrame) {
     });
   });
 }
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
+
+// Funkcja testowa
+async function testFirebaseConnection() {
+  try {
+    const docRef = await addDoc(collection(db, "test_connection"), {
+      message: "Połączenie działa!",
+      timestamp: new Date()
+    });
+    console.log("%c SUCCESS: Połączenie z Firebase działa! ID dokumentu: " + docRef.id, "color: green; font-size: 14px; font-weight: bold;");
+  } catch (error) {
+    console.error("%c ERROR: Błąd połączenia z Firebase:", "color: red; font-size: 14px; font-weight: bold;", error);
+  }
+}
+
+// Uruchomienie testu
+testFirebaseConnection();
