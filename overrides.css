@@ -11,8 +11,8 @@
 .hero-overlay { z-index: 1; }
 .hero-content, .hero-note { z-index: 2; }
 .cabin-woszczele { background-image: url('assets/images/woszczele-cover.jpg'); }
-.cabin-mrozy { background-image: url('assets/images/hero-mrozy.jpg'); }
-.cabin-loft { background-image: url('assets/images/cudodomki-og.jpg'); }
+.cabin-mrozy { background-image: url('assets/images/mrozy_spa.jpg'); }
+.cabin-loft { background-image: url('assets/images/loft_jacuzzi_niebieskie.jpg'); }
 @media (max-width: 800px) { .brand-logo img { height: 66px; margin-top: 0; } }
 
 /* --- STYLE DLA NOWEJ SEKCJI SZCZEGÓŁÓW DOMKÓW --- */
