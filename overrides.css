@@ -93,9 +93,24 @@
   color: #173c34;
 }
 
+/* Układ dla galerii zdjęć w sekcji szczegółów */
+.cabin-detail-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Estetyczny odstęp pomiędzy zdjęciami */
+  align-self: start;
+}
+
+/* Zmniejszenie i dopasowanie opisu dla obszernych tekstów */
+.cabin-detail-copy .large-copy {
+  font-size: 14.5px; /* Lekko mniejsza, czytelna czcionka */
+  line-height: 1.65;
+  color: #4a5850;
+}
+
 .cabin-detail-image img {
   width: 100%;
-  height: 380px;
+  height: 280px; /* Dostosowanie wysokości, gdy mamy więcej zdjęć w pionie */
   object-fit: cover;
   border-radius: 6px;
 }
