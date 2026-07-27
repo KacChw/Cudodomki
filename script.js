@@ -1,26 +1,24 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Konfiguracja Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
-    authDomain: "cudodomki.firebaseapp.com",
-    projectId: "cudodomki",
-    storageBucket: "cudodomki.firebasestorage.app",
-    messagingSenderId: "854596007648",
-    appId: "1:854596007648:web:5c62f53622f81e78814285",
-    measurementId: "G-84Z26DF7S6"
+  apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
+  authDomain: "cudodomki.firebaseapp.com",
+  projectId: "cudodomki",
+  storageBucket: "cudodomki.firebasestorage.app",
+  messagingSenderId: "854596007648",
+  appId: "1:854596007648:web:5c62f53622f81e78814285",
+  measurementId: "G-84Z26DF7S6"
 };
 
-  // Initialize Firebase
+// Inicjalizacja Firebase oraz Firestore
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const db = getFirestore(app); // <- Przypisanie bazy danych!
 
-
+// --- LOGIKA NAWIGACJI MOBILNEJ ---
 const toggle = document.querySelector('.nav-toggle');
 const nav = document.querySelector('.main-nav');
 
@@ -41,26 +39,21 @@ const cabinTabBtns = document.querySelectorAll('.cabin-tab-btn');
 const cabinDetailPanels = document.querySelectorAll('.cabin-detail-panel');
 const btnPoznajList = document.querySelectorAll('.btn-poznaj');
 
-// Funkcja aktywująca konkretny domek
 const activateCabinTab = (cabinKey) => {
-  // Przełączanie aktywnego przycisku nad kartą
   cabinTabBtns.forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.target === cabinKey);
   });
-  // Przełączanie widocznego panelu z opisem
   cabinDetailPanels.forEach((panel) => {
     panel.classList.toggle('active', panel.id === `detail-${cabinKey}`);
   });
 };
 
-// Kliknięcie bezpośrednio w zakłady nad kartami (Cudodomek Woszczele / SPA Mrozy / SPA Loft)
 cabinTabBtns.forEach((btn) => {
   btn.addEventListener('click', () => {
     activateCabinTab(btn.dataset.target);
   });
 });
 
-// Kliknięcie w przyciski "Poznaj →" w kartach powyżej
 btnPoznajList.forEach((btn) => {
   btn.addEventListener('click', () => {
     const cabinKey = btn.dataset.cabin;
@@ -68,6 +61,7 @@ btnPoznajList.forEach((btn) => {
   });
 });
 
+// --- GALERIA ---
 const galleryPhotos = [
   // Woszczele
   { src: 'assets/gallery/foto-01.jpg', category: 'woszczele' },
@@ -106,7 +100,6 @@ if (galleryGrid) {
 }
 
 const tabs = document.querySelectorAll('.gallery-tabs button');
-const thumbs = document.querySelectorAll('.gallery-thumb');
 tabs.forEach((tab) => tab.addEventListener('click', () => {
   tabs.forEach((item) => item.classList.remove('active'));
   tab.classList.add('active');
@@ -117,6 +110,7 @@ tabs.forEach((tab) => tab.addEventListener('click', () => {
   });
 }));
 
+// --- FORMULARZ REZERWACJI ---
 const bookingForm = document.querySelector('#booking-form');
 if (bookingForm) {
   bookingForm.addEventListener('submit', (event) => {
@@ -125,6 +119,7 @@ if (bookingForm) {
   });
 }
 
+// --- SLAJDY HERO ---
 const heroSlides = document.querySelectorAll('.hero-slide');
 if (heroSlides.length > 0) {
   let currentSlide = 0;
@@ -135,6 +130,7 @@ if (heroSlides.length > 0) {
   }, 5500);
 }
 
+// --- LIGHTBOX ---
 const lightbox = document.querySelector('#lightbox');
 const lightboxImage = lightbox ? lightbox.querySelector('img') : null;
 let activePhoto = 0;
@@ -157,6 +153,7 @@ if (galleryGrid && lightbox) {
   lightbox.querySelector('.lightbox-next').addEventListener('click', () => showPhoto(activePhoto + 1));
 }
 
+// --- KALENDARZ ---
 const calendarTitle = document.querySelector('#calendar-title');
 const calendarDays = document.querySelector('#calendar-days');
 const calendarSelect = document.querySelector('#cabin-calendar');
@@ -195,7 +192,7 @@ if (calendarTitle && calendarDays && calendarSelect) {
   renderCalendar();
 }
 
-// --- DYNAMICZNA MAPA GOOGLE DLA DOMKÓW ---
+// --- DYNAMICZNA MAPA GOOGLE ---
 const mapButtons = document.querySelectorAll('.map-btn');
 const mapFrame = document.querySelector('#contact-map-frame');
 const mapExternalLink = document.querySelector('#map-link-external');
@@ -203,26 +200,21 @@ const mapExternalLink = document.querySelector('#map-link-external');
 if (mapButtons.length > 0 && mapFrame) {
   mapButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
-      // Usunięcie klasy active ze wszystkich przycisków i dodanie do klikniętego
       mapButtons.forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
       const lat = btn.dataset.lat;
       const lng = btn.dataset.lng;
 
-      // Zmiana adresu ramki iframe mapy Google
       mapFrame.src = `https://www.google.com/maps?q=${lat},${lng}&z=13&output=embed`;
-      
-      // Aktualizacja linku zewnętrznego "Otwórz trasę"
       if (mapExternalLink) {
         mapExternalLink.href = `https://maps.google.com/?q=${lat},${lng}`;
       }
     });
   });
 }
-///import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
 
-// Funkcja testowa
+// --- TEST POŁĄCZENIA Z FIREBASE ---
 async function testFirebaseConnection() {
   try {
     const docRef = await addDoc(collection(db, "test_connection"), {
@@ -235,5 +227,4 @@ async function testFirebaseConnection() {
   }
 }
 
-// Uruchomienie testu
 testFirebaseConnection();
