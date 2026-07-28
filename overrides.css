@@ -157,6 +157,30 @@
   color: white;
 }
 
+/* Pełny dzień zajęty */
+.calendar-day.booked {
+  background: var(--clay, #c86d51);
+  color: white;
+}
+
+/* Dzień przyjazdu (wieczorem) – dół/prawa strona zajęta */
+.calendar-day.check-in {
+  background: linear-gradient(135deg, transparent 50%, var(--clay, #c86d51) 50%);
+  color: var(--forest, #173c34);
+}
+
+/* Dzień wyjazdu (rano) – góra/lewa strona zajęta */
+.calendar-day.check-out {
+  background: linear-gradient(135deg, var(--clay, #c86d51) 50%, transparent 50%);
+  color: var(--forest, #173c34);
+}
+
+/* Nakładające się dni (wyjazd jednych gości rano + przyjazd drugich po południu) */
+.calendar-day.check-in.check-out {
+  background: var(--clay, #c86d51);
+  color: white;
+}
+
 
 .availability { display: grid; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 11%; padding-top: 110px; padding-bottom: 110px; }
 .availability-copy h2 { font-size: 50px; margin-bottom: 22px; }

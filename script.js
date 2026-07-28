@@ -1,22 +1,158 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  where 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Konfiguracja Firebase
+// 1. Inicjalizacja Firebase (Twoja konfiguracja)
 const firebaseConfig = {
   apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
   authDomain: "cudodomki.firebaseapp.com",
   projectId: "cudodomki",
   storageBucket: "cudodomki.firebasestorage.app",
   messagingSenderId: "854596007648",
-  appId: "1:854596007648:web:5c62f53622f81e78814285",
-  measurementId: "G-84Z26DF7S6"
+  appId: "1:854596007648:web:5c62f53622f81e78814285"
 };
 
-// Inicjalizacja Firebase oraz Firestore
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app); // <- Przypisanie bazy danych!
+const db = getFirestore(app);
+
+// --- KALENDARZ & OBSŁUGA REZERWACJI FIREBASE ---
+const calendarTitle = document.querySelector('#calendar-title');
+const calendarDays = document.querySelector('#calendar-days');
+const calendarSelect = document.querySelector('#cabin-calendar');
+
+if (calendarTitle && calendarDays && calendarSelect) {
+  const calendarState = { year: 2026, month: 6 }; // Lipiec 2026 (miesiące 0-11)
+
+  const dateKey = (year, month, day) => 
+    `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+  // Pobieranie ZATWIERDZONYCH rezerwacji z Firestore
+  const fetchApprovedBookings = async (cabin) => {
+    const approvedBookings = [];
+    try {
+      const q = query(
+        collection(db, "bookings"),
+        where("cabin", "==", cabin),
+        where("status", "==", "approved")
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        approvedBookings.push(doc.data());
+      });
+    } catch (error) {
+      console.error("Błąd podczas pobierania rezerwacji:", error);
+    }
+    return approvedBookings;
+  };
+
+  // Renderowanie kalendarza z podziałem na pół-dni
+  const renderCalendar = async () => {
+    const { year, month } = calendarState;
+    const cabin = calendarSelect.value;
+    
+    const monthName = new Intl.DateTimeFormat('pl-PL', { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
+    calendarTitle.textContent = monthName;
+    calendarDays.innerHTML = '<p style="grid-column: 1/-1; text-align:center;">Ładowanie...</p>';
+
+    const activeBookings = await fetchApprovedBookings(cabin);
+    calendarDays.innerHTML = '';
+
+    const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Puste pola na początku miesiąca
+    for (let empty = 0; empty < firstDay; empty += 1) {
+      calendarDays.insertAdjacentHTML('beforeend', '<span class="calendar-day empty"></span>');
+    }
+
+    // Generowanie dni
+    for (let day = 1; day <= daysInMonth; day += 1) {
+      const dateStr = dateKey(year, month, day);
+      
+      let isCheckIn = false;
+      let isCheckOut = false;
+      let isFullBooked = false;
+
+      activeBookings.forEach((b) => {
+        if (dateStr === b.startDate) isCheckIn = true;
+        else if (dateStr === b.endDate) isCheckOut = true;
+        else if (dateStr > b.startDate && dateStr < b.endDate) isFullBooked = true;
+      });
+
+      let classes = ['calendar-day'];
+      if (isFullBooked) {
+        classes.push('booked');
+      } else {
+        if (isCheckIn) classes.push('check-in');
+        if (isCheckOut) classes.push('check-out');
+        if (!isCheckIn && !isCheckOut) classes.push('free');
+      }
+
+      calendarDays.insertAdjacentHTML('beforeend', `<span class="${classes.join(' ')}">${day}</span>`);
+    }
+  };
+
+  document.querySelector('#calendar-prev').addEventListener('click', () => {
+    calendarState.month -= 1;
+    if (calendarState.month < 0) { calendarState.month = 11; calendarState.year -= 1; }
+    renderCalendar();
+  });
+
+  document.querySelector('#calendar-next').addEventListener('click', () => {
+    calendarState.month += 1;
+    if (calendarState.month > 11) { calendarState.month = 0; calendarState.year += 1; }
+    renderCalendar();
+  });
+
+  calendarSelect.addEventListener('change', renderCalendar);
+  renderCalendar();
+}
+
+// --- OBSŁUGA FORMULARZA REZERWACJI ---
+const bookingForm = document.querySelector('#booking-form');
+if (bookingForm) {
+  bookingForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formMsg = bookingForm.querySelector('.form-message');
+    formMsg.textContent = 'Wysyłanie zapytania...';
+
+    const inputs = bookingForm.elements;
+    const startDate = inputs[0].value; // Przyjazd
+    const endDate = inputs[1].value;   // Wyjazd
+    const cabinRaw = inputs[2].value;  // Wybrany domek
+    const guests = inputs[3].value;    // Osoby
+    const email = inputs[4].value;     // E-mail
+
+    // Mapowanie nazwy z formularza na klucz domku
+    let cabin = 'woszczele';
+    if (cabinRaw.includes('Mrozy')) cabin = 'mrozy';
+    if (cabinRaw.includes('Loft')) cabin = 'loft';
+
+    try {
+      await addDoc(collection(db, "bookings"), {
+        startDate,
+        endDate,
+        cabin,
+        guests,
+        email,
+        status: "pending", // Nowe zgłoszenie wymaga Twojej akceptacji!
+        createdAt: new Date()
+      });
+
+      formMsg.textContent = 'Dziękujemy! Wniosek został wysłany. Oczekuje na potwierdzenie gospodarza.';
+      bookingForm.reset();
+    } catch (err) {
+      console.error(err);
+      formMsg.textContent = 'Błąd podczas wysyłania. Spróbuj ponownie.';
+    }
+  });
+}
 
 // --- LOGIKA NAWIGACJI MOBILNEJ ---
 const toggle = document.querySelector('.nav-toggle');
@@ -110,14 +246,14 @@ tabs.forEach((tab) => tab.addEventListener('click', () => {
   });
 }));
 
-// --- FORMULARZ REZERWACJI ---
-const bookingForm = document.querySelector('#booking-form');
-if (bookingForm) {
-  bookingForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    event.currentTarget.querySelector('.form-message').textContent = 'Dziękujemy! Wkrótce wrócimy z odpowiedzią.';
-  });
-}
+// // --- FORMULARZ REZERWACJI ---
+// const bookingForm = document.querySelector('#booking-form');
+// if (bookingForm) {
+//   bookingForm.addEventListener('submit', (event) => {
+//     event.preventDefault();
+//     event.currentTarget.querySelector('.form-message').textContent = 'Dziękujemy! Wkrótce wrócimy z odpowiedzią.';
+//   });
+// }
 
 // --- SLAJDY HERO ---
 const heroSlides = document.querySelectorAll('.hero-slide');
@@ -153,44 +289,44 @@ if (galleryGrid && lightbox) {
   lightbox.querySelector('.lightbox-next').addEventListener('click', () => showPhoto(activePhoto + 1));
 }
 
-// --- KALENDARZ ---
-const calendarTitle = document.querySelector('#calendar-title');
-const calendarDays = document.querySelector('#calendar-days');
-const calendarSelect = document.querySelector('#cabin-calendar');
+// // --- KALENDARZ ---
+// const calendarTitle = document.querySelector('#calendar-title');
+// const calendarDays = document.querySelector('#calendar-days');
+// const calendarSelect = document.querySelector('#cabin-calendar');
 
-if (calendarTitle && calendarDays && calendarSelect) {
-  const calendarState = { year: 2026, month: 6 };
-  const bookings = {
-    woszczele: ['2026-07-16/2026-07-26', '2026-08-08/2026-08-18'],
-    mrozy: ['2026-05-01/2026-05-03', '2026-06-04/2026-06-07'],
-    loft: ['2026-07-04/2026-07-11', '2026-08-15/2026-08-22'],
-  };
-  const dateKey = (year, month, day) => `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-  const isBooked = (date) => {
-    const periodList = bookings[calendarSelect.value] || [];
-    return periodList.some((period) => {
-      const [start, end] = period.split('/');
-      return date >= start && date <= end;
-    });
-  };
-  const renderCalendar = () => {
-    const { year, month } = calendarState;
-    const monthName = new Intl.DateTimeFormat('pl-PL', { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
-    calendarTitle.textContent = monthName;
-    calendarDays.innerHTML = '';
-    const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    for (let empty = 0; empty < firstDay; empty += 1) calendarDays.insertAdjacentHTML('beforeend', '<span class="calendar-day empty"></span>');
-    for (let day = 1; day <= daysInMonth; day += 1) {
-      const date = dateKey(year, month, day);
-      calendarDays.insertAdjacentHTML('beforeend', `<span class="calendar-day ${isBooked(date) ? 'booked' : 'free'}">${day}</span>`);
-    }
-  };
-  document.querySelector('#calendar-prev').addEventListener('click', () => { calendarState.month -= 1; if (calendarState.month < 0) { calendarState.month = 11; calendarState.year -= 1; } renderCalendar(); });
-  document.querySelector('#calendar-next').addEventListener('click', () => { calendarState.month += 1; if (calendarState.month > 11) { calendarState.month = 0; calendarState.year += 1; } renderCalendar(); });
-  calendarSelect.addEventListener('change', renderCalendar);
-  renderCalendar();
-}
+// if (calendarTitle && calendarDays && calendarSelect) {
+//   const calendarState = { year: 2026, month: 6 };
+//   const bookings = {
+//     woszczele: ['2026-07-16/2026-07-26', '2026-08-08/2026-08-18'],
+//     mrozy: ['2026-05-01/2026-05-03', '2026-06-04/2026-06-07'],
+//     loft: ['2026-07-04/2026-07-11', '2026-08-15/2026-08-22'],
+//   };
+//   const dateKey = (year, month, day) => `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+//   const isBooked = (date) => {
+//     const periodList = bookings[calendarSelect.value] || [];
+//     return periodList.some((period) => {
+//       const [start, end] = period.split('/');
+//       return date >= start && date <= end;
+//     });
+//   };
+//   const renderCalendar = () => {
+//     const { year, month } = calendarState;
+//     const monthName = new Intl.DateTimeFormat('pl-PL', { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
+//     calendarTitle.textContent = monthName;
+//     calendarDays.innerHTML = '';
+//     const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+//     const daysInMonth = new Date(year, month + 1, 0).getDate();
+//     for (let empty = 0; empty < firstDay; empty += 1) calendarDays.insertAdjacentHTML('beforeend', '<span class="calendar-day empty"></span>');
+//     for (let day = 1; day <= daysInMonth; day += 1) {
+//       const date = dateKey(year, month, day);
+//       calendarDays.insertAdjacentHTML('beforeend', `<span class="calendar-day ${isBooked(date) ? 'booked' : 'free'}">${day}</span>`);
+//     }
+//   };
+//   document.querySelector('#calendar-prev').addEventListener('click', () => { calendarState.month -= 1; if (calendarState.month < 0) { calendarState.month = 11; calendarState.year -= 1; } renderCalendar(); });
+//   document.querySelector('#calendar-next').addEventListener('click', () => { calendarState.month += 1; if (calendarState.month > 11) { calendarState.month = 0; calendarState.year += 1; } renderCalendar(); });
+//   calendarSelect.addEventListener('change', renderCalendar);
+//   renderCalendar();
+// }
 
 // --- DYNAMICZNA MAPA GOOGLE ---
 const mapButtons = document.querySelectorAll('.map-btn');
