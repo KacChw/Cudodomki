@@ -1,421 +1,152 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Administratora - Rezerwacje Domków</title>
-  <style>
-    :root {
-      --primary-color: #2c3e50;
-      --accent-color: #e67e22;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-color: #333333;
-      --border-color: #e0e0e0;
-      --danger-color: #e74c3c;
+<!-- FIREBASE SDK (Modular v10+) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { 
+    getFirestore, 
+    collection, 
+    getDocs, 
+    doc, 
+    deleteDoc, 
+    updateDoc,
+    query, 
+    orderBy 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  // Konfiguracja pobrana z Twojego script.js
+  const firebaseConfig = {
+    apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
+    authDomain: "cudodomki.firebaseapp.com",
+    projectId: "cudodomki",
+    storageBucket: "cudodomki.firebasestorage.app",
+    messagingSenderId: "854596007648",
+    appId: "1:854596007648:web:5c62f53622f81e78814285"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const loginView = document.getElementById('login-view');
+  const adminView = document.getElementById('admin-view');
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+  const logoutBtn = document.getElementById('logout-btn');
+  const reservationsTable = document.getElementById('reservations-table');
+  const reservationsList = document.getElementById('reservations-list');
+  const loadingEl = document.getElementById('loading');
+  const emptyMsg = document.getElementById('empty-msg');
+
+  // Kontrola logowania
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      loginView.classList.add('hidden');
+      adminView.classList.remove('hidden');
+      pobierzRezerwacje();
+    } else {
+      loginView.classList.remove('hidden');
+      adminView.classList.add('hidden');
     }
+  });
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  // Obsługa logowania
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.style.display = 'none';
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error("Błąd logowania:", error);
+      loginError.style.display = 'block';
     }
+  });
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      line-height: 1.6;
-      padding: 20px;
-    }
+  // Wylogowanie
+  logoutBtn.addEventListener('click', () => signOut(auth));
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+  // Pobieranie rezerwacji z bazy
+  async function pobierzRezerwacje() {
+    loadingEl.classList.remove('hidden');
+    reservationsTable.classList.add('hidden');
+    emptyMsg.classList.add('hidden');
+    reservationsList.innerHTML = '';
 
-    /* Karta logowania */
-    .login-card {
-      max-width: 400px;
-      margin: 80px auto;
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
+    try {
+      // Sortujemy po 'startDate' z Twojego formularza
+      const q = query(collection(db, "bookings"), orderBy("startDate", "desc"));
+      const querySnapshot = await getDocs(q);
 
-    .login-card h2 {
-      text-align: center;
-      color: var(--primary-color);
-      margin-bottom: 24px;
-    }
+      loadingEl.classList.add('hidden');
 
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-      font-size: 0.9em;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 1em;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .form-group input:focus {
-      border-color: var(--accent-color);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      background-color: var(--accent-color);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1em;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .btn:hover {
-      background-color: #d35400;
-    }
-
-    .btn-logout {
-      width: auto;
-      background-color: #7f8c8d;
-      padding: 8px 16px;
-      font-size: 0.9em;
-    }
-
-    .btn-logout:hover {
-      background-color: #626567;
-    }
-
-    .btn-delete {
-      background-color: var(--danger-color);
-      padding: 6px 12px;
-      font-size: 0.85em;
-      width: auto;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn-delete:hover {
-      background-color: #c0392b;
-    }
-
-    .error-msg {
-      color: var(--danger-color);
-      font-size: 0.9em;
-      margin-top: 10px;
-      text-align: center;
-      display: none;
-    }
-
-    /* Nagłówek panelu */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      background: var(--card-bg);
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .header h1 {
-      font-size: 1.5em;
-      color: var(--primary-color);
-    }
-
-    /* Tabela rezerwacji */
-    .table-container {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-
-    th, td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    th {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    tr:hover {
-      background-color: #f9f9f9;
-    }
-
-    .badge {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.85em;
-      font-weight: 600;
-      background-color: #e8f8f5;
-      color: #1abc9c;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 40px;
-      font-size: 1.1em;
-      color: #7f8c8d;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="container">
-    <!-- EKRAN LOGOWANIA -->
-    <div id="login-view" class="login-card">
-      <h2>Panel Administratora</h2>
-      <form id="login-form">
-        <div class="form-group">
-          <label for="email">Adres E-mail</label>
-          <input type="email" id="email" required placeholder="mama@twojedomki.pl">
-        </div>
-        <div class="form-group">
-          <label for="password">Hasło</label>
-          <input type="password" id="password" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn">Zaloguj się</button>
-        <p id="login-error" class="error-msg">Nieprawidłowy e-mail lub hasło.</p>
-      </form>
-    </div>
-
-    <!-- EKRAN PANELU ADMINA -->
-    <div id="admin-view" class="hidden">
-      <div class="header">
-        <h1>Lista Rezerwacji</h1>
-        <button id="logout-btn" class="btn btn-logout">Wyloguj się</button>
-      </div>
-
-      <div class="table-container">
-        <div id="loading" class="loading">Ładowanie rezerwacji...</div>
-        <table id="reservations-table" class="hidden">
-          <thead>
-            <tr>
-              <th>Imię i Nazwisko</th>
-              <th>Telefon</th>
-              <th>E-mail</th>
-              <th>Przyjazd</th>
-              <th>Wyjazd</th>
-              <th>Status</th>
-              <th>Akcja</th>
-            </tr>
-          </thead>
-          <tbody id="reservations-list">
-            <!-- Dane będą wstawiane dynamicznie przez JS -->
-          </tbody>
-        </table>
-        <p id="empty-msg" class="loading hidden">Brak zarejestrowanych rezerwacji.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- FIREBASE SDK (Modular v10+) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signInWithEmailAndPassword, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { 
-      getFirestore, 
-      collection, 
-      getDocs, 
-      doc, 
-      deleteDoc, 
-      query, 
-      orderBy 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    // ---------------------------------------------------------------------
-    // 1. TUTAJ WKLEJ SWOJĄ KONFIGURACJĘ Z KONSOLI FIREBASE
-    // ---------------------------------------------------------------------
-    const firebaseConfig = {
-        apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
-        authDomain: "cudodomki.firebaseapp.com",
-        projectId: "cudodomki",
-        storageBucket: "cudodomki.firebasestorage.app",
-        messagingSenderId: "854596007648",
-        appId: "1:854596007648:web:5c62f53622f81e78814285"
-        };
-
-    // Inicjalizacja Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Elementy DOM
-    const loginView = document.getElementById('login-view');
-    const adminView = document.getElementById('admin-view');
-    const loginForm = document.getElementById('login-form');
-    const loginError = document.getElementById('login-error');
-    const logoutBtn = document.getElementById('logout-btn');
-    const reservationsTable = document.getElementById('reservations-table');
-    const reservationsList = document.getElementById('reservations-list');
-    const loadingEl = document.getElementById('loading');
-    const emptyMsg = document.getElementById('empty-msg');
-
-    // ---------------------------------------------------------------------
-    // 2. KONTROLA STANU LOGOWANIA
-    // ---------------------------------------------------------------------
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Zalogowano -> pokaż panel
-        loginView.classList.add('hidden');
-        adminView.classList.remove('hidden');
-        pobierzRezerwacje();
-      } else {
-        // Niezalogowano -> pokaż logowanie
-        loginView.classList.remove('hidden');
-        adminView.classList.add('hidden');
+      if (querySnapshot.empty) {
+        emptyMsg.classList.remove('hidden');
+        return;
       }
-    });
 
-    // Obsługa Formularza Logowania
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      loginError.style.display = 'none';
+      reservationsTable.classList.remove('hidden');
 
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+      querySnapshot.forEach((docSnap) => {
+        const r = docSnap.data();
+        const docId = docSnap.id;
 
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (error) {
-        console.error("Błąd logowania:", error);
-        loginError.style.display = 'block';
-      }
-    });
+        const isApproved = r.status === 'approved';
 
-    // Obsługa Wylogowania
-    logoutBtn.addEventListener('click', () => {
-      signOut(auth);
-    });
-
-    // ---------------------------------------------------------------------
-    // 3. POBIERANIE I WYŚWIETLANIE REZERWACJI
-    // ---------------------------------------------------------------------
-    async function pobierzRezerwacje() {
-      loadingEl.classList.remove('hidden');
-      reservationsTable.classList.add('hidden');
-      emptyMsg.classList.add('hidden');
-      reservationsList.innerHTML = '';
-
-      try {
-        // Pobieramy kolekcję 'reservations' sortując według daty checkIn
-        // Jeśli nie korzystasz z pola checkIn lub masz inne, zamień "checkIn" na odpowiednią nazwę
-        const q = query(collection(db, "reservations"), orderBy("checkIn", "desc"));
-        const querySnapshot = await getDocs(q);
-
-        loadingEl.classList.add('hidden');
-
-        if (querySnapshot.empty) {
-          emptyMsg.classList.remove('hidden');
-          return;
-        }
-
-        reservationsTable.classList.remove('hidden');
-
-        querySnapshot.forEach((docSnap) => {
-          const r = docSnap.data();
-          const docId = docSnap.id;
-
-          const tr = document.createElement('tr');
-            tr.innerHTML = `
-            <td><strong>${escapeHtml(r.cabin || 'Nie wybrano')}</strong> (osób: ${escapeHtml(r.guests || '1')})</td>
-            <td><a href="mailto:${escapeHtml(r.email || '')}">${escapeHtml(r.email || 'Brak')}</a></td>
-            <td>${escapeHtml(r.startDate || 'Brak')}</td>
-            <td>${escapeHtml(r.endDate || 'Brak')}</td>
-            <td><span class="badge">${escapeHtml(r.status || 'pending')}</span></td>
-            <td>
-                <button class="btn btn-delete" data-id="${docId}">Usuń</button>
-            </td>
-            `;
-          reservationsList.appendChild(tr);
-        });
-
-        // Podpięcie zdarzeń usuwania do przycisków
-        document.querySelectorAll('.btn-delete').forEach(button => {
-          button.addEventListener('click', async (e) => {
-            const id = e.target.getAttribute('data-id');
-            if (confirm("Czy na pewno chcesz usunąć tę rezerwację?")) {
-              await usunRezerwacje(id);
-            }
-          });
-        });
-
-      } catch (error) {
-        console.error("Błąd podczas pobierania rezerwacji:", error);
-        
-        // Jeśli pojawia się błąd o braku indeksu (Firebase wymaga go przy orderBy), 
-        // Firebase wypluje w konsoli link do jego utworzenia.
-        if (error.message.includes('index')) {
-            loadingEl.textContent = "Błąd: Brak indeksu w Firebase. Sprawdź konsolę przeglądarki i kliknij w wygenerowany link by go utworzyć.";
-        } else {
-            loadingEl.textContent = "Błąd podczas ładowania danych. Upewnij się, że jesteś zalogowany i masz odpowiednie reguły.";
-        }
-      }
-    }
-
-    // Usunięcie rezerwacji
-    async function usunRezerwacje(id) {
-      try {
-        await deleteDoc(doc(db, "reservations", id));
-        pobierzRezerwacje(); // Odśwież tabelę
-      } catch (error) {
-        alert("Błąd podczas usuwania: " + error.message);
-      }
-    }
-
-    // Ochrona przed XSS
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, function(m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#039;'
-        }[m];
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(r.cabin || 'Brak')}</strong> (osób: ${escapeHtml(r.guests || '1')})</td>
+          <td><a href="mailto:${escapeHtml(r.email || '')}">${escapeHtml(r.email || 'Brak')}</a></td>
+          <td>${escapeHtml(r.startDate || 'Brak')}</td>
+          <td>${escapeHtml(r.endDate || 'Brak')}</td>
+          <td>
+            <span class="badge" style="background-color: ${isApproved ? '#e8f8f5' : '#fef9e7'}; color: ${isApproved ? '#1abc9c' : '#f39c12'};">
+              ${isApproved ? 'Zatwierdzona' : 'Oczekuje'}
+            </span>
+          </td>
+          <td>
+            ${!isApproved ? <button class="btn btn-approve" data-id="${docId}" style="background-color:#2ecc71; padding: 6px 12px; font-size: 0.85em; width: auto; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px;">Zatwierdź</button> : ''}
+            <button class="btn btn-delete" data-id="${docId}">Usuń</button>
+          </td>
+        `;
+        reservationsList.appendChild(tr);
       });
+
+      // Obsługa przycisku zatwierdzania (zmienia status na 'approved', co pokaże termin w kalendarzu!)
+      document.querySelectorAll('.btn-approve').forEach(button => {
+        button.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          await updateDoc(doc(db, "bookings", id), { status: "approved" });
+          pobierzRezerwacje();
+        });
+      });
+
+      // Obsługa przycisku usuwania
+      document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', async (e) => {
+          const id = e.target.getAttribute('data-id');
+          if (confirm("Czy na pewno chcesz usunąć tę rezerwację?")) {
+            await deleteDoc(doc(db, "bookings", id));
+            pobierzRezerwacje();
+          }
+        });
+      });
+
+    } catch (error) {
+      console.error("Błąd podczas pobierania rezerwacji:", error);
+      loadingEl.textContent = "Błąd pobierania danych. Upewnij się, że jesteś zalogowany.";
     }
-  </script>
-</body>
-</html>
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    });
+  }
+</script>
