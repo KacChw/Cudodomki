@@ -3,153 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Administratora - Rezerwacje Domków</title>
+  <title>Panel Administratora - Cudodomki</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="overrides.css" />
   <style>
-    :root {
-      --primary-color: #2c3e50;
-      --accent-color: #e67e22;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-color: #333333;
-      --border-color: #e0e0e0;
-      --danger-color: #e74c3c;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
+    /* Stylowanie Panelu Admina */
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      line-height: 1.6;
-      padding: 20px;
+      /*background-color: #f7f5f0;
+      color: #173c34;*/
+      background: url("assets/images/hero-woszczele.jpg") center / cover no-repeat;
+      font-family: 'DM Sans', sans-serif;
+      padding: 20px 15px;
+      margin: 0;
     }
 
-    .container {
-      max-width: 1100px;
+    .admin-container {
+      max-width: 1400px;
       margin: 0 auto;
     }
 
-    /* Karta logowania */
+    /* Karta Logowania */
     .login-card {
-      max-width: 400px;
-      margin: 80px auto;
-      background: var(--card-bg);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      max-width: 420px;
+      margin: 60px auto;
+      background: #fffdf8;
+      padding: 40px;
+      border-radius: 8px;
+      border: 1px solid #dcd8cd;
+      box-shadow: 0 18px 40px rgba(23,60,52,.08);
+      
     }
 
     .login-card h2 {
-      text-align: center;
-      color: var(--primary-color);
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      color: #173c34;
+      font-size: 28px;
       margin-bottom: 24px;
+      text-align: center;
+      letter-spacing: 0.02em;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 600;
-      font-size: 0.9em;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .form-group input {
       width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 1em;
-      outline: none;
-      transition: border-color 0.2s;
+      padding: 12px 16px;
+      border: 1px solid #c8c9bd;
+      background: transparent;
+      border-radius: 4px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #173c34;
+      box-sizing: border-box;
     }
 
     .form-group input:focus {
-      border-color: var(--accent-color);
+      outline: none;
+      border-color: #173c34;
     }
 
-    .btn {
+    .btn-admin {
       width: 100%;
-      padding: 12px;
-      background-color: var(--accent-color);
-      color: white;
+      padding: 14px;
+      background-color: #173c34;
+      color: #ffffff;
       border: none;
-      border-radius: 6px;
-      font-size: 1em;
-      font-weight: bold;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background 0.3s ease;
     }
 
-    .btn:hover {
-      background-color: #d35400;
+    .btn-admin:hover {
+      background-color: #0f2923;
+    }
+
+    /* Nagłówek Panelu Admina */
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fffdf8;
+        padding: 20px 30px;
+        border-radius: 8px;
+        border: 1px solid #dcd8cd;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(23,60,52,.04);
+        letter-spacing: 0.02em;
+    }
+
+    .admin-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      color: #173c34;
+      margin: 0;
     }
 
     .btn-logout {
-      width: auto;
-      background-color: #7f8c8d;
-      padding: 8px 16px;
-      font-size: 0.9em;
+      background-color: transparent;
+      border: 1px solid #c8c9bd;
+      color: #173c34;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s ease;
     }
 
     .btn-logout:hover {
-      background-color: #626567;
+      background-color: #173c34;
+      color: #fff;
     }
 
-    .btn-delete {
-      background-color: var(--danger-color);
-      padding: 6px 12px;
-      font-size: 0.85em;
-      width: auto;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+    /* UKŁAD DWUKOLUMNOWY */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: start;
     }
 
-    .btn-delete:hover {
-      background-color: #c0392b;
+    /* Lewa kolumna - Lista Rezerwacji */
+    .admin-left-col {
+      background: #fffdf8;
+      border-radius: 8px;
+      border: 1px solid #dcd8cd;
+      padding: 24px;
+      box-shadow: 0 4px 15px rgba(23,60,52,.04);
     }
 
-    .error-msg {
-      color: var(--danger-color);
-      font-size: 0.9em;
-      margin-top: 10px;
-      text-align: center;
-      display: none;
-    }
-
-    /* Nagłówek panelu */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      background: var(--card-bg);
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .header h1 {
-      font-size: 1.5em;
-      color: var(--primary-color);
-    }
-
-    /* Tabela rezerwacji */
-    .table-container {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      overflow-x: auto;
+    .admin-left-col h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      margin-bottom: 18px;
+      color: #173c34;
+      letter-spacing: 0.02em;
     }
 
     table {
@@ -159,28 +164,142 @@
     }
 
     th, td {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-color);
+      padding: 12px 14px;
+      border-bottom: 1px solid #e8e5dc;
+      font-size: 13.5px;
     }
 
     th {
-      background-color: #f8f9fa;
-      color: var(--primary-color);
-      font-weight: 600;
+      background-color: #f1eee4;
+      color: #173c34;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
     }
 
     tr:hover {
-      background-color: #f9f9f9;
+      background-color: #faf8f3;
     }
 
     .badge {
       display: inline-block;
       padding: 4px 8px;
       border-radius: 4px;
-      font-size: 0.85em;
+      font-size: 11px;
       font-weight: 600;
-      background-color: #e8f8f5;
-      color: #1abc9c;
+    }
+
+    .badge-approved {
+      background-color: #e2f0d9;
+      color: #2e6b38;
+    }
+
+    .badge-pending {
+      background-color: #fff2cc;
+      color: #b27b00;
+    }
+
+    .btn-approve {
+      background-color: #276749;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 4px;
+    }
+
+    .btn-delete {
+      background-color: #c86d51;
+      padding: 5px 10px;
+      font-size: 11px;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Prawa kolumna - Kalendarze z własnym skrollem */
+    .admin-right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    /* Stylizacja paska przewijania dla prawego panelu */
+    .admin-right-col::-webkit-scrollbar {
+      width: 6px;
+    }
+    .admin-right-col::-webkit-scrollbar-thumb {
+      background: #c8c9bd;
+      border-radius: 4px;
+    }
+
+    .admin-calendar-card {
+      padding: 22px;
+      background: #fffdf8;
+      border: 1px solid #dcd8cd;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(23,60,52,.04);
+    }
+
+    .admin-calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e8e5dc;
+    }
+
+    .admin-calendar-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #173c34;
+      margin: 0;
+    }
+
+    .admin-calendar-month-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      text-transform: capitalize;
+      color: #173c34;
+      margin-bottom: 12px;
+    }
+
+    /* Dni i Połówki w Kalendarzu */
+    .calendar-day.booked {
+      background: #c86d51 !important;
+      color: white !important;
+    }
+
+    .calendar-day.check-in {
+      background: linear-gradient(135deg, transparent 50%, #c86d51 50%) !important;
+      color: #173c34;
+    }
+
+    .calendar-day.check-out {
+      background: linear-gradient(135deg, #c86d51 50%, transparent 50%) !important;
+      color: #173c34;
+    }
+
+    .calendar-day.check-in.check-out {
+      background: #c86d51 !important;
+      color: white !important;
+    }
+
+    .error-msg {
+      color: #c86d51;
+      font-size: 13px;
+      margin-top: 12px;
+      text-align: center;
+      display: none;
     }
 
     .hidden {
@@ -189,213 +308,398 @@
 
     .loading {
       text-align: center;
-      padding: 40px;
-      font-size: 1.1em;
-      color: #7f8c8d;
+      padding: 30px;
+      font-size: 14px;
+      color: #68786f;
+    }
+
+    /* Kolory wierszy dla poszczególnych domków */
+    tr.row-woszczele {
+    background-color: rgba(200, 109, 81, 0.12) !important; /* Lekki pomarańcz / glina */
+    }
+    tr.row-woszczele:hover {
+    background-color: rgba(200, 109, 81, 0.20) !important;
+    }
+
+    tr.row-mrozy {
+    background-color: rgba(23, 60, 52, 0.10) !important; /* Lekka zieleń leśna */
+    }
+    tr.row-mrozy:hover {
+    background-color: rgba(23, 60, 52, 0.18) !important;
+    }
+
+    tr.row-loft {
+    background-color: rgba(138, 109, 80, 0.14) !important; /* Lekki ciepły brąz */
+    }
+    tr.row-loft:hover {
+    background-color: rgba(138, 109, 80, 0.22) !important;
+    }
+
+    @media (max-width: 1024px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+      .admin-right-col {
+        max-height: none;
+        overflow-y: visible;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- EKRAN LOGOWANIA -->
+  <div class="admin-container">
+    <!-- WIDOK LOGOWANIA -->
     <div id="login-view" class="login-card">
       <h2>Panel Administratora</h2>
       <form id="login-form">
         <div class="form-group">
           <label for="email">Adres E-mail</label>
-          <input type="email" id="email" required placeholder="mama@twojedomki.pl">
+          <input type="email" id="email" required placeholder="admin@cudodomki.pl">
         </div>
         <div class="form-group">
           <label for="password">Hasło</label>
           <input type="password" id="password" required placeholder="••••••••">
         </div>
-        <button type="submit" class="btn">Zaloguj się</button>
-        <p id="login-error" class="error-msg">Nieprawidłowy e-mail lub hasło.</p>
+        <button type="submit" class="btn-admin">Zaloguj się</button>
+        <p id="login-error" class="error-msg"></p>
       </form>
     </div>
 
-    <!-- EKRAN PANELU ADMINA -->
+    <!-- WIDOK PANELU ADMINA -->
     <div id="admin-view" class="hidden">
-      <div class="header">
-        <h1>Lista Rezerwacji</h1>
-        <button id="logout-btn" class="btn btn-logout">Wyloguj się</button>
+      <div class="admin-header">
+        <h1>Cudodomki – Panel Zarządzania</h1>
+        <button id="logout-btn" class="btn-logout">Wyloguj się</button>
       </div>
 
-      <div class="table-container">
-        <div id="loading" class="loading">Ładowanie rezerwacji...</div>
-        <table id="reservations-table" class="hidden">
-          <thead>
-            <tr>
-              <th>Imię i Nazwisko</th>
-              <th>Telefon</th>
-              <th>E-mail</th>
-              <th>Przyjazd</th>
-              <th>Wyjazd</th>
-              <th>Status</th>
-              <th>Akcja</th>
-            </tr>
-          </thead>
-          <tbody id="reservations-list">
-            <!-- Dane będą wstawiane dynamicznie przez JS -->
-          </tbody>
-        </table>
-        <p id="empty-msg" class="loading hidden">Brak zarejestrowanych rezerwacji.</p>
+      <!-- UKŁAD 2-KOLUMNOWY -->
+      <div class="admin-layout">
+        
+        <!-- LEWA KOLUMNA: TABELA REZERWACJI -->
+        <div class="admin-left-col">
+          <h2>Lista Zapytani i Rezerwacji</h2>
+          <div id="loading" class="loading">Ładowanie rezerwacji z bazy...</div>
+          <table id="reservations-table" class="hidden">
+            <thead>
+              <tr>
+                <th>Domek i Osoby</th>
+                <th>E-mail</th>
+                <th>Przyjazd</th>
+                <th>Wyjazd</th>
+                <th>Status</th>
+                <th>Akcje</th>
+              </tr>
+            </thead>
+            <tbody id="reservations-list"></tbody>
+          </table>
+          <p id="empty-msg" class="loading hidden">Brak zarejestrowanych rezerwacji w bazie.</p>
+        </div>
+
+        <!-- PRAWA KOLUMNA: 3 KALENDARZE Z NIEZALEŻNYM SKROLLEM -->
+        <div class="admin-right-col">
+          
+          <!-- KALENDARZ 1: WOSZCZELE -->
+          <div class="admin-calendar-card" data-cabin="woszczele">
+            <div class="admin-calendar-header">
+              <h3>Cudodomek Woszczele</h3>
+              <div>
+                <button class="calendar-nav cal-prev">←</button>
+                <button class="calendar-nav cal-next">→</button>
+              </div>
+            </div>
+            <div class="admin-calendar-month-title cal-title"></div>
+            <div class="calendar-weekdays"><span>Pon</span><span>Wt</span><span>Śr</span><span>Czw</span><span>Pt</span><span>Sob</span><span>Nie</span></div>
+            <div class="calendar-days cal-days"></div>
+          </div>
+
+          <!-- KALENDARZ 2: MROZY WIELKIE -->
+          <div class="admin-calendar-card" data-cabin="mrozy">
+            <div class="admin-calendar-header">
+              <h3>SPA Mrozy Wielkie</h3>
+              <div>
+                <button class="calendar-nav cal-prev">←</button>
+                <button class="calendar-nav cal-next">→</button>
+              </div>
+            </div>
+            <div class="admin-calendar-month-title cal-title"></div>
+            <div class="calendar-weekdays"><span>Pon</span><span>Wt</span><span>Śr</span><span>Czw</span><span>Pt</span><span>Sob</span><span>Nie</span></div>
+            <div class="calendar-days cal-days"></div>
+          </div>
+
+          <!-- KALENDARZ 3: LOFT -->
+          <div class="admin-calendar-card" data-cabin="loft">
+            <div class="admin-calendar-header">
+              <h3>SPA Loft</h3>
+              <div>
+                <button class="calendar-nav cal-prev">←</button>
+                <button class="calendar-nav cal-next">→</button>
+              </div>
+            </div>
+            <div class="admin-calendar-month-title cal-title"></div>
+            <div class="calendar-weekdays"><span>Pon</span><span>Wt</span><span>Śr</span><span>Czw</span><span>Pt</span><span>Sob</span><span>Nie</span></div>
+            <div class="calendar-days cal-days"></div>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- FIREBASE SDK (Modular v10+) -->
   <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { 
-    getAuth, 
-    signInWithEmailAndPassword, 
-    signOut, 
-    onAuthStateChanged 
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { 
-    getFirestore, 
-    collection, 
-    getDocs, 
-    doc, 
-    deleteDoc, 
-    updateDoc,
-    query, 
-    orderBy 
-  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      signOut, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      getDocs, 
+      doc, 
+      deleteDoc, 
+      updateDoc,
+      query, 
+      where,
+      orderBy 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Konfiguracja pobrana z Twojego script.js
-  const firebaseConfig = {
-    apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
-    authDomain: "cudodomki.firebaseapp.com",
-    projectId: "cudodomki",
-    storageBucket: "cudodomki.firebasestorage.app",
-    messagingSenderId: "854596007648",
-    appId: "1:854596007648:web:5c62f53622f81e78814285"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyAO6W4-rLOYqVyrcHdbKlMd6BZAAqYDWQI",
+      authDomain: "cudodomki.firebaseapp.com",
+      projectId: "cudodomki",
+      storageBucket: "cudodomki.firebasestorage.app",
+      messagingSenderId: "854596007648",
+      appId: "1:854596007648:web:5c62f53622f81e78814285"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  const loginView = document.getElementById('login-view');
-  const adminView = document.getElementById('admin-view');
-  const loginForm = document.getElementById('login-form');
-  const loginError = document.getElementById('login-error');
-  const logoutBtn = document.getElementById('logout-btn');
-  const reservationsTable = document.getElementById('reservations-table');
-  const reservationsList = document.getElementById('reservations-list');
-  const loadingEl = document.getElementById('loading');
-  const emptyMsg = document.getElementById('empty-msg');
+    const loginView = document.getElementById('login-view');
+    const adminView = document.getElementById('admin-view');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const logoutBtn = document.getElementById('logout-btn');
+    const reservationsTable = document.getElementById('reservations-table');
+    const reservationsList = document.getElementById('reservations-list');
+    const loadingEl = document.getElementById('loading');
+    const emptyMsg = document.getElementById('empty-msg');
 
-  // Kontrola logowania
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      loginView.classList.add('hidden');
-      adminView.classList.remove('hidden');
-      pobierzRezerwacje();
-    } else {
-      loginView.classList.remove('hidden');
-      adminView.classList.add('hidden');
+    const calendarState = { year: 2026, month: 6 };
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loginView.classList.add('hidden');
+        adminView.classList.remove('hidden');
+        pobierzRezerwacje();
+        renderAllAdminCalendars();
+      } else {
+        loginView.classList.remove('hidden');
+        adminView.classList.add('hidden');
+      }
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginError.style.display = 'none';
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        console.error("Błąd logowania:", error.code, error.message);
+        loginError.textContent = "Błędny e-mail lub hasło.";
+        loginError.style.display = 'block';
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => signOut(auth));
+
+    // --- POBIERANIE TABELI REZERWACJI ---
+async function pobierzRezerwacje() {
+  loadingEl.classList.remove('hidden');
+  reservationsTable.classList.add('hidden');
+  emptyMsg.classList.add('hidden');
+  reservationsList.innerHTML = '';
+
+  try {
+    const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    loadingEl.classList.add('hidden');
+
+    if (querySnapshot.empty) {
+      emptyMsg.classList.remove('hidden');
+      return;
     }
-  });
 
-  // Obsługa logowania
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    loginError.style.display = 'none';
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    reservationsTable.classList.remove('hidden');
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error) {
-      console.error("Błąd logowania:", error);
-      loginError.style.display = 'block';
-    }
-  });
+    querySnapshot.forEach((docSnap) => {
+      const r = docSnap.data();
+      const docId = docSnap.id;
+      const isApproved = (r.status === 'approved');
 
-  // Wylogowanie
-  logoutBtn.addEventListener('click', () => signOut(auth));
-
-  // Pobieranie rezerwacji z bazy
-  async function pobierzRezerwacje() {
-    loadingEl.classList.remove('hidden');
-    reservationsTable.classList.add('hidden');
-    emptyMsg.classList.add('hidden');
-    reservationsList.innerHTML = '';
-
-    try {
-      // Sortujemy po 'startDate' z Twojego formularza
-      const q = query(collection(db, "bookings"), orderBy("startDate", "desc"));
-      const querySnapshot = await getDocs(q);
-
-      loadingEl.classList.add('hidden');
-
-      if (querySnapshot.empty) {
-        emptyMsg.classList.remove('hidden');
-        return;
+      const tr = document.createElement('tr');
+      
+      const rawCabin = (r.cabin || '').toLowerCase();
+      
+      // Przypisanie odpowiedniej klasy koloru w zależności od domku
+      if (rawCabin.includes('woszczele')) {
+        tr.classList.add('row-woszczele');
+      } else if (rawCabin.includes('mrozy')) {
+        tr.classList.add('row-mrozy');
+      } else if (rawCabin.includes('loft')) {
+        tr.classList.add('row-loft');
       }
 
-      reservationsTable.classList.remove('hidden');
+      const cabin = escapeHtml(r.cabin || 'Nie wybrano');
+      const guests = escapeHtml(r.guests || '1');
+      const email = escapeHtml(r.email || 'Brak');
+      const startDate = escapeHtml(r.startDate || 'Brak');
+      const endDate = escapeHtml(r.endDate || 'Brak');
 
-      querySnapshot.forEach((docSnap) => {
-        const r = docSnap.data();
-        const docId = docSnap.id;
+      const badgeClass = isApproved ? 'badge-approved' : 'badge-pending';
+      const badgeText = isApproved ? 'Zatwierdzona' : 'Oczekuje';
 
-        const isApproved = r.status === 'approved';
+      let btnApprove = '';
+      if (!isApproved) {
+        btnApprove = '<button class="btn-approve" data-id="' + docId + '">Zatwierdź</button>';
+      }
+      const btnDelete = '<button class="btn-delete" data-id="' + docId + '">Usuń</button>';
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${escapeHtml(r.cabin || 'Brak')}</strong> (osób: ${escapeHtml(r.guests || '1')})</td>
-          <td><a href="mailto:${escapeHtml(r.email || '')}">${escapeHtml(r.email || 'Brak')}</a></td>
-          <td>${escapeHtml(r.startDate || 'Brak')}</td>
-          <td>${escapeHtml(r.endDate || 'Brak')}</td>
-          <td>
-            <span class="badge" style="background-color: ${isApproved ? '#e8f8f5' : '#fef9e7'}; color: ${isApproved ? '#1abc9c' : '#f39c12'};">
-              ${isApproved ? 'Zatwierdzona' : 'Oczekuje'}
-            </span>
-          </td>
-          <td>
-            ${!isApproved ? <button class="btn btn-approve" data-id="${docId}" style="background-color:#2ecc71; padding: 6px 12px; font-size: 0.85em; width: auto; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 5px;">Zatwierdź</button> : ''}
-            <button class="btn btn-delete" data-id="${docId}">Usuń</button>
-          </td>
-        `;
-        reservationsList.appendChild(tr);
-      });
+      tr.innerHTML = 
+        '<td><strong>' + cabin.toUpperCase() + '</strong> (' + guests + ')</td>' +
+        '<td><a href="mailto:' + email + '">' + email + '</a></td>' +
+        '<td>' + startDate + '</td>' +
+        '<td>' + endDate + '</td>' +
+        '<td><span class="badge ' + badgeClass + '">' + badgeText + '</span></td>' +
+        '<td>' + btnApprove + btnDelete + '</td>';
 
-      // Obsługa przycisku zatwierdzania (zmienia status na 'approved', co pokaże termin w kalendarzu!)
-      document.querySelectorAll('.btn-approve').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          const id = e.target.getAttribute('data-id');
-          await updateDoc(doc(db, "bookings", id), { status: "approved" });
-          pobierzRezerwacje();
-        });
-      });
-
-      // Obsługa przycisku usuwania
-      document.querySelectorAll('.btn-delete').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          const id = e.target.getAttribute('data-id');
-          if (confirm("Czy na pewno chcesz usunąć tę rezerwację?")) {
-            await deleteDoc(doc(db, "bookings", id));
-            pobierzRezerwacje();
-          }
-        });
-      });
-
-    } catch (error) {
-      console.error("Błąd podczas pobierania rezerwacji:", error);
-      loadingEl.textContent = "Błąd pobierania danych. Upewnij się, że jesteś zalogowany.";
-    }
-  }
-
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, function(m) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      reservationsList.appendChild(tr);
     });
+
+    document.querySelectorAll('.btn-approve').forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        await updateDoc(doc(db, "bookings", id), { status: "approved" });
+        pobierzRezerwacje();
+        renderAllAdminCalendars();
+      });
+    });
+
+    document.querySelectorAll('.btn-delete').forEach(button => {
+      button.addEventListener('click', async (e) => {
+        const id = e.target.getAttribute('data-id');
+        if (confirm("Czy na pewno chcesz usunąć tę rezerwację?")) {
+          await deleteDoc(doc(db, "bookings", id));
+          pobierzRezerwacje();
+          renderAllAdminCalendars();
+        }
+      });
+    });
+
+  } catch (error) {
+    console.error("Błąd podczas pobierania rezerwacji:", error);
+    loadingEl.textContent = "Błąd pobierania danych z bazy.";
   }
-</script>
+}
+
+    // --- LOGIKA 3 KALENDARZY DLA ADMINA ---
+    const dateKey = (year, month, day) => 
+      `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    async function fetchCabinBookings(cabin) {
+      const bookings = [];
+      try {
+        const q = query(
+          collection(db, "bookings"),
+          where("cabin", "==", cabin),
+          where("status", "==", "approved")
+        );
+        const snapshot = await getDocs(q);
+        snapshot.forEach((doc) => bookings.push(doc.data()));
+      } catch (err) {
+        console.error("Błąd kalendarza:", err);
+      }
+      return bookings;
+    }
+
+    async function renderSingleAdminCalendar(cardEl) {
+      const cabin = cardEl.dataset.cabin;
+      const titleEl = cardEl.querySelector('.cal-title');
+      const daysEl = cardEl.querySelector('.cal-days');
+
+      const { year, month } = calendarState;
+      const monthName = new Intl.DateTimeFormat('pl-PL', { month: 'long', year: 'numeric' }).format(new Date(year, month, 1));
+      titleEl.textContent = monthName;
+
+      const activeBookings = await fetchCabinBookings(cabin);
+      daysEl.innerHTML = '';
+
+      const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let empty = 0; empty < firstDay; empty += 1) {
+        daysEl.insertAdjacentHTML('beforeend', '<span class="calendar-day empty"></span>');
+      }
+
+      for (let day = 1; day <= daysInMonth; day += 1) {
+        const dateStr = dateKey(year, month, day);
+        let isCheckIn = false;
+        let isCheckOut = false;
+        let isFullBooked = false;
+
+        activeBookings.forEach((b) => {
+          if (dateStr === b.startDate) isCheckIn = true;
+          else if (dateStr === b.endDate) isCheckOut = true;
+          else if (dateStr > b.startDate && dateStr < b.endDate) isFullBooked = true;
+        });
+
+        let classes = ['calendar-day'];
+        if (isFullBooked) {
+          classes.push('booked');
+        } else {
+          if (isCheckIn) classes.push('check-in');
+          if (isCheckOut) classes.push('check-out');
+          if (!isCheckIn && !isCheckOut) classes.push('free');
+        }
+
+        daysEl.insertAdjacentHTML('beforeend', `<span class="${classes.join(' ')}">${day}</span>`);
+      }
+    }
+
+    function renderAllAdminCalendars() {
+      document.querySelectorAll('.admin-calendar-card').forEach((card) => {
+        renderSingleAdminCalendar(card);
+      });
+    }
+
+    document.querySelectorAll('.admin-calendar-card').forEach((card) => {
+      card.querySelector('.cal-prev').addEventListener('click', () => {
+        calendarState.month -= 1;
+        if (calendarState.month < 0) { calendarState.month = 11; calendarState.year -= 1; }
+        renderAllAdminCalendars();
+      });
+
+      card.querySelector('.cal-next').addEventListener('click', () => {
+        calendarState.month += 1;
+        if (calendarState.month > 11) { calendarState.month = 0; calendarState.year += 1; }
+        renderAllAdminCalendars();
+      });
+    });
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+  </script>
 </body>
 </html>
