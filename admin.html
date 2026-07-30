@@ -358,17 +358,16 @@
           const docId = docSnap.id;
 
           const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${escapeHtml(r.name || 'Brak')}</strong></td>
-            <td><a href="tel:${escapeHtml(r.phone || '')}">${escapeHtml(r.phone || 'Brak')}</a></td>
+            tr.innerHTML = `
+            <td><strong>${escapeHtml(r.cabin || 'Nie wybrano')}</strong> (osób: ${escapeHtml(r.guests || '1')})</td>
             <td><a href="mailto:${escapeHtml(r.email || '')}">${escapeHtml(r.email || 'Brak')}</a></td>
-            <td>${escapeHtml(r.checkIn || 'Brak')}</td>
-            <td>${escapeHtml(r.checkOut || 'Brak')}</td>
-            <td><span class="badge">Nowa</span></td>
+            <td>${escapeHtml(r.startDate || 'Brak')}</td>
+            <td>${escapeHtml(r.endDate || 'Brak')}</td>
+            <td><span class="badge">${escapeHtml(r.status || 'pending')}</span></td>
             <td>
-              <button class="btn btn-delete" data-id="${docId}">Usuń</button>
+                <button class="btn btn-delete" data-id="${docId}">Usuń</button>
             </td>
-          `;
+            `;
           reservationsList.appendChild(tr);
         });
 
