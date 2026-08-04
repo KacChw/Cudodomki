@@ -350,17 +350,17 @@ if (mapButtons.length > 0 && mapFrame) {
   });
 }
 
-// --- TEST POŁĄCZENIA Z FIREBASE ---
-async function testFirebaseConnection() {
-  try {
-    const docRef = await addDoc(collection(db, "test_connection"), {
-      message: "Połączenie działa!",
-      timestamp: new Date()
-    });
-    console.log("%c SUCCESS: Połączenie z Firebase działa! ID dokumentu: " + docRef.id, "color: green; font-size: 14px; font-weight: bold;");
-  } catch (error) {
-    console.error("%c ERROR: Błąd połączenia z Firebase:", "color: red; font-size: 14px; font-weight: bold;", error);
-  }
-}
+// // --- TEST POŁĄCZENIA Z FIREBASE ---
+// async function testFirebaseConnection() {
+//   try {
+//     const docRef = await addDoc(collection(db, "test_connection"), {
+//       message: "Połączenie działa!",
+//       timestamp: new Date()
+//     });
+//     console.log("%c SUCCESS: Połączenie z Firebase działa! ID dokumentu: " + docRef.id, "color: green; font-size: 14px; font-weight: bold;");
+//   } catch (error) {
+//     console.error("%c ERROR: Błąd połączenia z Firebase:", "color: red; font-size: 14px; font-weight: bold;", error);
+//   }
+// }
 
-testFirebaseConnection();
+// testFirebaseConnection();
