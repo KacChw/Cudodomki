@@ -200,7 +200,7 @@ btnPoznajList.forEach((btn) => {
 // --- GALERIA ---
 const galleryPhotos = [
   // Woszczele
-  { src: 'assets/gallery/foto-01.jpg', category: 'woszczele' },
+  { src: 'assets/images/bilard.jpg', category: 'woszczele' },
   { src: 'assets/gallery/foto-02.jpg', category: 'woszczele' },
   { src: 'assets/gallery/foto-03.jpg', category: 'woszczele' },
   { src: 'assets/gallery/foto-04.jpg', category: 'woszczele' },
@@ -210,21 +210,19 @@ const galleryPhotos = [
   { src: 'assets/gallery/foto-08.jpg', category: 'woszczele' },
   { src: 'assets/gallery/foto-09.jpg', category: 'woszczele' },
   // Mrozy
-  { src: 'assets/gallery/foto-10.jpg', category: 'mrozy' },
-  { src: 'assets/gallery/foto-11.jpg', category: 'mrozy' },
-  { src: 'assets/gallery/foto-12.jpg', category: 'mrozy' },
-  { src: 'assets/gallery/foto-13.jpg', category: 'mrozy' },
+  { src: 'assets/images/mrozy_ogród.jpg', category: 'mrozy' },
+  { src: 'assets/images/mrozy_spa.jpg', category: 'mrozy' },
+  { src: 'assets/images/mrozy_srodek.jpg', category: 'mrozy' },
+  { src: 'assets/images/mrozy_wew.jpg', category: 'mrozy' },
   { src: 'assets/gallery/foto-14.jpg', category: 'mrozy' },
   { src: 'assets/gallery/foto-15.jpg', category: 'mrozy' },
   { src: 'assets/gallery/foto-16.jpg', category: 'mrozy' },
   { src: 'assets/gallery/foto-17.jpg', category: 'mrozy' },
   // Loft
-  { src: 'assets/gallery/foto-18.jpg', category: 'loft' },
-  { src: 'assets/gallery/foto-19.jpg', category: 'loft' },
-  { src: 'assets/gallery/foto-20.jpg', category: 'loft' },
-  { src: 'assets/gallery/foto-21.jpg', category: 'loft' },
-  { src: 'assets/gallery/foto-22.jpg', category: 'loft' },
-  { src: 'assets/gallery/foto-23.jpg', category: 'loft' },
+  { src: 'assets/images/loft_bok.jpg', category: 'loft' },
+  { src: 'assets/images/loft_jacuzzi.jpeg', category: 'loft' },
+  { src: 'assets/images/loft_jacuzzi_niebieskie.jpg', category: 'loft' },
+  { src: 'assets/images/loft_sauna.jpg', category: 'loft' },
   { src: 'assets/gallery/foto-24.jpg', category: 'loft' },
   { src: 'assets/gallery/foto-25.jpg', category: 'loft' },
   { src: 'assets/gallery/foto-26.jpg', category: 'loft' }
